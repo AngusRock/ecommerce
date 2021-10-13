@@ -50,14 +50,19 @@
     </div>
     
     <div class="container mt-5">
-        <h3>Productos en Carrito</h3>
-        <table class="table table-striped">
+        <h3>Productos en Carrito <button type="button" class="btn btn-primary" id="cleanStorage">Eliminar Todos</button>
+        </h3>
+
+          
+
+        <table class="table table-striped align-middle">
             <thead>
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">Producto</th>
                 <th scope="col">Unidades</th>
                 <th scope="col">Precio</th>
+                <th scope="col">Eliminar</th>
               </tr>
             </thead>
             <tbody id="productsInCartTable">
@@ -65,6 +70,7 @@
             </tbody>
           </table>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="js/cart.js"></script>
 </body>
 </html>

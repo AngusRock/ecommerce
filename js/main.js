@@ -16,24 +16,22 @@ let productsToBuy = [];
 
 if(JSON.parse(localStorage.getItem("productsToBuy")) != null){
     productsToBuy = JSON.parse(localStorage.getItem("productsToBuy"));
-    updateCartUnits();
+    updateCartUnits(productsToBuy.length);
 }
-
 
 renderProductsInHomePage(productsInStock);
 let productsElements = getProductsElements();
-
-addListenerToProductsTable();
+let cartButtons = $('.cart-btn');
+addListenerToRemoveAllItemsButton(cartButtons);
 
 function getProductsElements(){
-    return document.querySelectorAll('.products');
+    return $('.products');
 }
 
-function addListenerToProductsTable(){
-    let cartButton = document.querySelectorAll('.cart-btn');
-    //loop que encasilla a todos los productos y los añade al carrito//
-    for (let i=0; i < cartButton.length; i++){
-        cartButton[i].addEventListener("click", () => {
+function addListenerToRemoveAllItemsButton(cartButtons){
+    //agrega un listener de click a todos los botones de añadir carrito
+    for (let i = 0; i < cartButtons.length; i++){
+        $(cartButtons[i]).on("click", () => {
             addProductToCart(i);
         });
     }
@@ -41,9 +39,9 @@ function addListenerToProductsTable(){
 
 function addProductToCart(prodId){
     let requiredUnits = parseInt(productsElements[prodId].querySelector('.productQty').value);
-    if(requiredUnits > 0){
+    if(requiredUnits >= 0){
         if(addProductToArray(prodId, requiredUnits)){
-            setLocalStorage(productsToBuy);
+            setLocalStorage(productsToBuy);            
         }
      }    
 }
@@ -56,56 +54,89 @@ function addProductToArray(prodId, units){
     if(productsToBuy.length > 0){
         const productFound = productsToBuy.find(product => product.name === productObj.name);
         //si encuentra producto y las unidades solicitadas aumentaron, entonces lo actualiza
-        if(productFound != null && units > productFound.qty) {            
+        if(productFound != null && units > 0) {            
             productFound.qty = units;
-            productFound.price = productObj.price * units;
-            updateCartUnits();            
+            productFound.price = productObj.price * units;           
             productsToBuyUpdated = true;
+        } else if (productFound != null && units == 0) {
+            const productIndex = productsToBuy.findIndex(product => product.name === productObj.name);
+            productsToBuy.splice(productIndex, 1);
+            updateCartUnits(productsToBuy.length);            
+            updateButtonDesign(prodId, false);            
+            productsToBuyUpdated = true;        
         //si no encuentra producto lo pushea al array de productos a comprar
         } else if(productFound == null) {
-            productsToBuyUpdated = pushProductToArray(productObj, units);            
+            productsToBuyUpdated = pushProductToArray(productObj, units, prodId);            
         }
     //si el array esta vacio, pushea el producto al array de productos a comprar
-    } else {
-        productsToBuyUpdated = pushProductToArray(productObj, units);         
+    } else if(units > 0) {
+        productsToBuyUpdated = pushProductToArray(productObj, units, prodId);         
     }
 
     return productsToBuyUpdated;
 }
 
-function pushProductToArray(productObj, units){
+function pushProductToArray(productObj, units, prodId){
     productsToBuy.push(new Product(productObj.name, units, (productObj.price * units)));
-    updateCartUnits();
+    updateCartUnits(productsToBuy.length);
+    updateButtonDesign(prodId, true); 
     return true;
 }
 
-function updateCartUnits(){    
-    let productsQty = 0;    
-    for (const prod of productsToBuy) {
-        productsQty += prod.qty;        
+function updateCartUnits(productsQty){
+    document.getElementById('cartUnits').textContent = productsQty;       
+}
+
+function updateButtonDesign(buttonId, addClass){
+    if(addClass) {
+        cartButtons[buttonId].classList.add('btn-altColor');
+        cartButtons[buttonId].innerHTML = 'Actualizar Unidades';
+    }        
+    else {
+        cartButtons[buttonId].classList.remove('btn-altColor');
+        cartButtons[buttonId].innerHTML = 'Agregar al carrito';
     }
-    document.getElementById('cartUnits').textContent = productsQty;   
 }
 
 function setLocalStorage(products){
     localStorage.setItem("productsToBuy",JSON.stringify(products));
 }
 
-function renderProductsInHomePage(products){
+/*function renderProductsInHomePage(products){
     let prodHtmlTable = document.getElementById('productsTable');
     let htmlTable = '';
     for (const product of products) {
+        let productFound = productsToBuy.find(productS => productS.name === product.name);        
         htmlTable +=    `<div class="box products">
                             <h4>${product.name}</h4>
                             <p>(stock: ${product.stock})</p>
                             <div class="col-xs-2">
                                 <div class="price">P. Unit: $${product.price}</div>
-                                <input type="number" class="form-control productQty" placeholder="Qty">                
+                                <input type="number" class="form-control productQty" placeholder="Qty" value="${productFound != null ? productFound.qty : 0}">                
                             </div>
                             <div class="mt-3">
-                                <button type="button" class="btn btn-primary cart-btn">Añadir al carrito</button>
+                                <button type="button" class="btn btn-primary cart-btn ${productFound != null ? 'btn-altColor' : ''}">${productFound != null ? 'Actualizar Unidades' : 'Agregar al carrito'}</button>
                             </div>
                         </div>`;        
     }
     prodHtmlTable.innerHTML = htmlTable;        
+}*/
+function renderProductsInHomePage(products){
+    let prodHtmlTable = $('#productsTable');    
+    let htmlTable = '';
+    for (const product of products) {
+        let productFound = productsToBuy.find(productS => productS.name === product.name);        
+        htmlTable +=    `<div class="box products">
+                            <h4>${product.name}</h4>
+                            <p>(stock: ${product.stock})</p>
+                            <div class="col-xs-2">
+                                <div class="price">P. Unit: $${product.price}</div>
+                                <input type="number" class="form-control productQty" placeholder="Qty" value="${productFound != null ? productFound.qty : 0}">                
+                            </div>
+                            <div class="mt-3">
+                                <button type="button" class="btn btn-primary cart-btn ${productFound != null ? 'btn-altColor' : ''}">${productFound != null ? 'Actualizar Unidades' : 'Agregar al carrito'}</button>
+                            </div>
+                        </div>`;        
+    }
+    prodHtmlTable.append(htmlTable);        
 }
