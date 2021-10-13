@@ -1,0 +1,23 @@
+{ "products" : [
+        {
+            "name" : "Pera",
+            "stock" : 2,
+            "price" : 13
+        },
+        {
+            "name" : "Manzana",
+            "stock" : 10,
+            "price" : 13
+        },
+        {
+            "name" : "Kiwi",
+            "stock" : 2,
+            "price" : 13
+        },
+        {
+            "name" : "Naranja",
+            "stock" : 2,
+            "price" : 13
+        }
+    ]
+}

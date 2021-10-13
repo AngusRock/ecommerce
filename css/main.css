@@ -1,0 +1,73 @@
+body {
+    font-family: 'Nunito', sans-serif !important;
+    font-weight: 600 !important;
+}
+
+.navbar-nav {
+  margin-left: auto;
+  margin-right: 20px;
+}
+
+.navbar-brand {
+  padding-left: 10px;  
+}  
+
+  .table {
+    width: 50% !important;
+    border: 1px solid black;
+  }
+
+
+.menu {
+  padding:2rem 7%;
+}
+
+.menu .box-container{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    gap:1.5rem;
+}
+
+.menu .box-container .box{
+    padding:2rem;
+    text-align: center;
+    border: .15rem solid #1a2f8fec;
+    border-radius: .4rem;
+}
+
+.menu .box-container .box .price{
+    font-size: 1rem;
+    padding:.5rem 0;
+}
+
+
+.menu .box-container .box:hover{
+  background-color: rgb(236, 236, 236);
+  /*opacity: 0.6;*/
+  transition: 0.3s;
+}
+
+input[type=number]::-webkit-inner-spin-button {
+  opacity: 1;   
+}
+
+.form-control{
+  width: 25% !important;
+  display: inline !important;
+  
+}
+
+.stock {
+  font-size: .9rem;
+  color:rgb(0, 74, 172);
+}
+
+
+
+
+
+
+
+
+
+
