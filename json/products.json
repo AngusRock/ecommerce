@@ -1,0 +1,32 @@
+[
+    {
+        "country" : "Colombia",
+        "stock" : 2,
+        "price" : 350,
+        "type" : "Arabica"
+    },
+    {
+        "country" : "Brasil",
+        "stock" : 10,
+        "price" : 200,
+        "type" : "Arabica"
+    },
+    {
+        "country" : "Italia",
+        "stock" : 2,
+        "price" : 320,
+        "type" : "Robusta"
+    },
+    {
+        "country" : "Alemania",
+        "stock" : 2,
+        "price" : 400,
+        "type" : "Robusta"
+    },
+    {
+        "country" : "Japón",
+        "stock" : 2,
+        "price" : 550,
+        "type" : "Arabica"
+    }
+]
