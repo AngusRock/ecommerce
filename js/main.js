@@ -127,7 +127,7 @@ function renderProductsInHomePage(products, selectorId){
         htmlTable +=    `<div class="box products">
                             <h4>${product.type}</h4>
                             <h6>Origen: ${product.country}</h6>
-                            <img src="/images/coffee_cup.jpg">
+                            <img src="images/coffee_cup.jpg">
                             <div class="col-xs-2">
                                 <div class="price">P. Unit: $${product.price}</div>
                                 <input type="number" class="form-control productQty" placeholder="Qty" value="${productFound != null ? productFound.qty : 0}">
