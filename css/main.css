@@ -104,11 +104,20 @@ input[type=number]::-webkit-inner-spin-button {
   color: black;
 }
 
-/*.modal-styles {
-  background-color: #1b1b1b !important;
-  border: solid 1px rgba(105, 105, 105, 0.329) !important; }
+.modal-styles {
+  width: 40rem !important;  
+}
 
-.modal-button {
+.modal-stylesa {
+  padding-right: 40rem !important;  
+}
+
+.table-style {
+  width: 36rem !important;
+  margin-left: 17px;
+}
+
+/*.modal-button {
   background-color: #ff5e00 !important;
   border: none !important;
   width: 40%; }

@@ -30,8 +30,7 @@ function runSyncMethods(){
     addListenerToAllAddCartButtons(cartButtons);
     buildCoffeeTypesList(coffeeTypesSet,'#coffeeTypeList');
     addListenerToCoffeeTypesList('#coffeeTypeList');
-
-    //startProcess();
+    addListenerToBuyButton('#buyConfirmation');    
 }
 
 function getLocalStorageItems(){
@@ -154,14 +153,26 @@ function buildCoffeeTypesList(coffeeTypes,selectorId){
 function filterCoffeeType(){
     if(this.value !== '--Todos--'){
         let selectedType = productsInStock.filter(coffeeType => coffeeType.type === this.value);
-        renderProductsInHomePage(selectedType,productsTableSelector);        
+        renderProductsInHomePage(selectedType,productsTableSelector);
+        cartButtons = $('.cart-btn');
+        addListenerToAllAddCartButtons(cartButtons);        
     } else {
         renderProductsInHomePage(productsInStock,productsTableSelector);
+        cartButtons = $('.cart-btn');
+        addListenerToAllAddCartButtons(cartButtons);
     }
 }
 
 function addListenerToCoffeeTypesList(selectorId){    
     $(selectorId).on("change", filterCoffeeType);    
+}
+
+function addListenerToBuyButton(selectorId){    
+    $(selectorId).on("click", () => {
+        localStorage.clear();
+        runSyncMethods();
+        cartProcess();
+    });    
 }
 class Product {
     constructor(country, qty, price, type) {
