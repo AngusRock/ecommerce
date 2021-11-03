@@ -1,9 +1,9 @@
 let productsInCart = [];
 
-cartProcess();
+//cartProcess();
 
-function cartProcess(){
-    addListenerToRemoveAllItemsButton();
+function cartProcess(){    
+    //addListenerToRemoveAllItemsButton();
     productsInCart = getLocalStorage();
     updateCartUnitsBis(productsInCart);
     buildProductsTable(productsInCart);
@@ -11,13 +11,12 @@ function cartProcess(){
 }
 
 
-function addListenerToRemoveAllItemsButton(){
-    let removeAllButton = $('#cleanStorage');
+function addListenerToRemoveAllItemsButton(){    
     //agrega un listener de click a todos los botones de añadir carrito
-        $(removeAllButton).on("click", () => {
+        $('#cleanStorage').on("click", () => {
+            console.log('entro al click remove all');
             localStorage.clear();
-            runSyncMethods();
-            cartProcess();
+            runSyncMethods();            
         });
 }
 
@@ -31,6 +30,7 @@ function addListenerToRemoveItemButton(){
 }
 
 function removeItemFromTable(itemIndex) {
+    console.log('productsInCart',productsInCart);
     productsInCart.splice(itemIndex, 1);
     setLocalStorageBis();
     updateCartUnitsBis(productsInCart);
@@ -44,6 +44,7 @@ function getLocalStorage(){
 
 function setLocalStorageBis(){
     localStorage.setItem("productsToBuy",JSON.stringify(productsInCart));
+    getLocalStorageItems();
 }
 
 function updateCartUnitsBis(productsInCart){

@@ -12,6 +12,7 @@ getJSONFile(jsonFileURL).then((response) => {
         coffeeTypesSet.add(object.type);
     }    
     runSyncMethods();
+    addListenerToRemoveAllItemsButton();
 });
 
 //async method
@@ -30,7 +31,8 @@ function runSyncMethods(){
     addListenerToAllAddCartButtons(cartButtons);
     buildCoffeeTypesList(coffeeTypesSet,'#coffeeTypeList');
     addListenerToCoffeeTypesList('#coffeeTypeList');
-    addListenerToBuyButton('#buyConfirmation');    
+    addListenerToBuyButton('#buyConfirmation');
+    cartProcess();
 }
 
 function getLocalStorageItems(){
@@ -47,73 +49,80 @@ function getProductsElements(){
 
 function addListenerToAllAddCartButtons(cartButtons){
     //agrega un listener de click a todos los botones de añadir carrito
-    for (let i = 0; i < cartButtons.length; i++){
-        $(cartButtons[i]).on("click", () => {
-            addProductToCart(i);
-            cartProcess();
-        });
+    for (const button of cartButtons) {
+        $(button).click(addProductToCart);                
     }
 }
 
-function addProductToCart(prodId){
-    let requiredUnits = parseInt(productsElements[prodId].querySelector('.productQty').value);
+function addProductToCart(event){     
+    const prodId  = event.target.id;
+    //let requiredUnits = parseInt(productsElements[prodId].querySelector('.productQty').value);
+    let requiredUnits = parseInt(document.querySelector('[data-id="'+prodId+'"]').value);
+    console.log('units: '+requiredUnits);
+    
+    let productObj = productsInStock.find(product => product.id == prodId);
+    //console.log('prodobj addToCart: ',productObj);
     if(requiredUnits >= 0){
         if(addProductToArray(prodId, requiredUnits)){
             setLocalStorage(productsToBuy);
+            cartProcess();
         }
      }
 }
 
 function addProductToArray(prodId, units){
-    let productObj = productsInStock[prodId];
-    let productsToBuyUpdated = false;
+    //let productObj = productsInStock[prodId];
+    let productObj = productsInStock.find(product => product.id == prodId);
+    //let productObj = productsInStock[prodId];
+    let productsToBuyUpdated = false;    
 
     //verifica si el array tiene algun producto a comprar cargado
     if(productsToBuy.length > 0){
-        const productFound = productsToBuy.find(product => product.country === productObj.country);
-        //si encuentra producto y las unidades solicitadas aumentaron, entonces lo actualiza
-        if(productFound != null && units > 0) {
+        const productFound = productsToBuy.find(product => product.id == prodId);        
+        //si encuentra producto y las unidades solicitadas aumentaron, entonces solo lo actualiza
+        if(productFound != null && units > 0) {            
             productFound.qty = units;
             productFound.price = productObj.price * units;
             productsToBuyUpdated = true;
-        } else if (productFound != null && units == 0) {
-            const productIndex = productsToBuy.findIndex(product => product.country === productObj.country);
+        } else if (productFound != null && units == 0) {            
+            const productIndex = productsToBuy.findIndex(product => product.id == prodId);
             productsToBuy.splice(productIndex, 1);
             updateCartUnits(productsToBuy.length);
             updateButtonDesign(prodId, false);
             productsToBuyUpdated = true;
         //si no encuentra producto lo pushea al array de productos a comprar
-        } else if(productFound == null) {
-            productsToBuyUpdated = pushProductToArray(productObj, units, prodId);
+        } else if(productFound == null && units > 0) {            
+            productsToBuyUpdated = pushProductToCart(productObj, units, prodId);
         }
     //si el array esta vacio, pushea el producto al array de productos a comprar
-    } else if(units > 0) {
-        productsToBuyUpdated = pushProductToArray(productObj, units, prodId);
+    } else if(units > 0) {        
+        productsToBuyUpdated = pushProductToCart(productObj, units, prodId);
     }
 
     return productsToBuyUpdated;
 }
 
-function pushProductToArray(productObj, units, prodId){
-    productsToBuy.push(new Product(productObj.country, units, (productObj.price * units), productObj.type));
+function pushProductToCart(productObj, units, prodId){
+    console.log('pushProduct');
+    productsToBuy.push(new Product(productObj.country, units, (productObj.price * units), productObj.type, prodId));
     updateCartUnits(productsToBuy.length);
-    updateButtonDesign(prodId, true);
+    //updateButtonDesign(prodId, true);
     return true;
 }
 
-function updateCartUnits(productsQty){
+function updateCartUnits(productsQty){    
     document.getElementById('cartUnits').textContent = productsQty;
 }
 
 function updateButtonDesign(buttonId, addClass){
-    if(addClass) {
+    /*if(addClass) {
         cartButtons[buttonId].classList.add('btn-altColor');
         cartButtons[buttonId].innerHTML = 'Actualizar Unidades';
     }
     else {
         cartButtons[buttonId].classList.remove('btn-altColor');
         cartButtons[buttonId].innerHTML = 'Agregar al carrito';
-    }
+    }*/
 }
 
 function setLocalStorage(products){
@@ -131,14 +140,14 @@ function renderProductsInHomePage(products, selectorId){
                             <img src="images/coffee_cup.jpg">
                             <div class="col-xs-2">
                                 <div class="price">P. Unit: $${product.price}</div>
-                                <input type="number" class="form-control productQty" placeholder="Qty" value="${productFound != null ? productFound.qty : 0}">
+                                <input type="number" data-id="${product.id}" class="form-control productQty" placeholder="Qty" value="${productFound != null ? productFound.qty : 0}">
                             </div>
                             <div class="mt-3">
-                                <button type="button" class="btn btn-primary ${productFound != null ? 'btn-altColor' : 'cart-btn'}">${productFound != null ? 'Actualizar Unidades' : 'Agregar al carrito'}</button>
+                                <button type="button" id="${product.id}" class="btn btn-primary ${productFound != null ? 'btn-altColor' : 'cart-btn'}">${productFound != null ? 'Actualizar Unidades' : 'Agregar al carrito'}</button>
                             </div>
                          </div>`;
     }
-    $(selectorId).append(htmlTable);
+    $(selectorId).append(htmlTable);    
 }
 
 function buildCoffeeTypesList(coffeeTypes,selectorId){
@@ -170,15 +179,15 @@ function addListenerToCoffeeTypesList(selectorId){
 function addListenerToBuyButton(selectorId){    
     $(selectorId).on("click", () => {
         localStorage.clear();
-        runSyncMethods();
-        cartProcess();
+        runSyncMethods();        
     });    
 }
 class Product {
-    constructor(country, qty, price, type) {
+    constructor(country, qty, price, type, id) {
         this.country = country;
         this.qty = parseInt(qty);
         this.price = price;
         this.type = type;
+        this.id = id;
     }
 }
