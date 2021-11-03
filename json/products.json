@@ -1,29 +1,34 @@
 [
     {
+        "id" : 0,
         "country" : "Colombia",
         "stock" : 2,
         "price" : 350,
         "type" : "Arabica"
     },
     {
+        "id" : 1,
         "country" : "Brasil",
         "stock" : 10,
         "price" : 200,
         "type" : "Arabica"
     },
     {
+        "id" : 2,
         "country" : "Italia",
         "stock" : 2,
         "price" : 320,
         "type" : "Robusta"
     },
     {
+        "id" : 3,
         "country" : "Alemania",
         "stock" : 2,
         "price" : 400,
         "type" : "Robusta"
     },
     {
+        "id" : 4,
         "country" : "Japón",
         "stock" : 2,
         "price" : 550,
