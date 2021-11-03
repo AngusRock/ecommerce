@@ -6,7 +6,6 @@ let jsonFileURL = 'json/products.json';
 let coffeeTypesSet = new Set();
 const productsTableSelector = '#productsTable';
 
-
 getJSONFile(jsonFileURL).then((response) => {
     for (const object of response) {
         productsInStock.push(object);
@@ -28,9 +27,11 @@ function runSyncMethods(){
     renderProductsInHomePage(productsInStock,productsTableSelector);
     productsElements = getProductsElements();
     cartButtons = $('.cart-btn');
-    addListenerAllAddCartButtons(cartButtons);
+    addListenerToAllAddCartButtons(cartButtons);
     buildCoffeeTypesList(coffeeTypesSet,'#coffeeTypeList');
     addListenerToCoffeeTypesList('#coffeeTypeList');
+
+    //startProcess();
 }
 
 function getLocalStorageItems(){
@@ -45,11 +46,12 @@ function getProductsElements(){
     return $('.products');
 }
 
-function addListenerAllAddCartButtons(cartButtons){
+function addListenerToAllAddCartButtons(cartButtons){
     //agrega un listener de click a todos los botones de añadir carrito
     for (let i = 0; i < cartButtons.length; i++){
         $(cartButtons[i]).on("click", () => {
             addProductToCart(i);
+            cartProcess();
         });
     }
 }
@@ -94,7 +96,7 @@ function addProductToArray(prodId, units){
 }
 
 function pushProductToArray(productObj, units, prodId){
-    productsToBuy.push(new Product(productObj.country, units, (productObj.price * units)));
+    productsToBuy.push(new Product(productObj.country, units, (productObj.price * units), productObj.type));
     updateCartUnits(productsToBuy.length);
     updateButtonDesign(prodId, true);
     return true;
@@ -133,7 +135,7 @@ function renderProductsInHomePage(products, selectorId){
                                 <input type="number" class="form-control productQty" placeholder="Qty" value="${productFound != null ? productFound.qty : 0}">
                             </div>
                             <div class="mt-3">
-                                <button type="button" class="btn btn-primary cart-btn ${productFound != null ? 'btn-altColor' : ''}">${productFound != null ? 'Actualizar Unidades' : 'Agregar al carrito'}</button>
+                                <button type="button" class="btn btn-primary ${productFound != null ? 'btn-altColor' : 'cart-btn'}">${productFound != null ? 'Actualizar Unidades' : 'Agregar al carrito'}</button>
                             </div>
                          </div>`;
     }
@@ -162,9 +164,10 @@ function addListenerToCoffeeTypesList(selectorId){
     $(selectorId).on("change", filterCoffeeType);    
 }
 class Product {
-    constructor(country, qty, price) {
+    constructor(country, qty, price, type) {
         this.country = country;
         this.qty = parseInt(qty);
         this.price = price;
+        this.type = type;
     }
 }

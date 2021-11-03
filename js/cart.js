@@ -1,11 +1,11 @@
 let productsInCart = [];
 
-addListenerToRemoveAllItemsButton();
-startProcess();
+cartProcess();
 
-function startProcess(){
+function cartProcess(){
+    addListenerToRemoveAllItemsButton();
     productsInCart = getLocalStorage();
-    updateCartUnits(productsInCart);
+    updateCartUnitsBis(productsInCart);
     buildProductsTable(productsInCart);
     addListenerToRemoveItemButton();
 }
@@ -16,7 +16,8 @@ function addListenerToRemoveAllItemsButton(){
     //agrega un listener de click a todos los botones de añadir carrito
         $(removeAllButton).on("click", () => {
             localStorage.clear();
-            startProcess();
+            runSyncMethods();
+            cartProcess();
         });
 }
 
@@ -31,8 +32,8 @@ function addListenerToRemoveItemButton(){
 
 function removeItemFromTable(itemIndex) {
     productsInCart.splice(itemIndex, 1);
-    setLocalStorage();
-    updateCartUnits(productsInCart);
+    setLocalStorageBis();
+    updateCartUnitsBis(productsInCart);
     buildProductsTable(productsInCart);
     addListenerToRemoveItemButton();
 }
@@ -41,11 +42,11 @@ function getLocalStorage(){
     return JSON.parse(localStorage.getItem("productsToBuy"));
 }
 
-function setLocalStorage(){
+function setLocalStorageBis(){
     localStorage.setItem("productsToBuy",JSON.stringify(productsInCart));
 }
 
-function updateCartUnits(productsInCart){
+function updateCartUnitsBis(productsInCart){
     let productsQty = 0;
     if(productsInCart) {
         productsQty = productsInCart.length;
@@ -62,7 +63,8 @@ function buildProductsTable(prodList){
         for (const prod of prodList) {
             htmlTable +=            `<tr>
                                     <th scope="row">${prodPosition}</th>
-                                    <td>${prod.name}</td>
+                                    <td>${prod.type}</td>
+                                    <td>${prod.country}</td>
                                     <td>${isNaN(prod.qty) ? 0 : prod.qty}</td>
                                     <td>$${prod.price == '' ? 0 : prod.price}</td>
                                     <td><button type="button" class="btn btn-danger btn-sm remove-btn" id="cleanStorage">X</button></td>
@@ -72,6 +74,7 @@ function buildProductsTable(prodList){
         }
         htmlTable +=   `<tr>
                         <th scope="row"></th>
+                        <td></td>
                         <td></td>
                         <td><strong>Total</strong></td>
                         <td><strong>$${totalPrice}</strong></td>

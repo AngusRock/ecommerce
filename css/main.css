@@ -3,6 +3,7 @@ body {
     font-weight: 600 !important;
     background-image: url('../images/coffee_bgc.jpg');
     background-attachment: fixed;
+    color: white !important;
 }
 
 .navbar-bg {
@@ -74,9 +75,14 @@ input[type=number]::-webkit-inner-spin-button {
   color:rgb(0, 74, 172);
 }
 
+.cart-btn {
+  background-color: rgb(68, 58, 55) !important;
+}
+
 .btn-altColor {
   background-color: rgb(1, 107, 75) !important;
 }
+
 
 .main-box {
   max-width: 80%;  
@@ -94,6 +100,10 @@ input[type=number]::-webkit-inner-spin-button {
     transform: scale(1.03);
 }
 
+.modal-title {
+  color: black;
+}
+
 /*.modal-styles {
   background-color: #1b1b1b !important;
   border: solid 1px rgba(105, 105, 105, 0.329) !important; }
@@ -106,13 +116,3 @@ input[type=number]::-webkit-inner-spin-button {
 .modal-button:hover {
   background-color: #ca4a00 !important; }
   */
-
-
-
-
-
-
-
-
-
-
